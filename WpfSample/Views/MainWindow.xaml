@@ -1,0 +1,112 @@
+﻿<Window x:Class="WpfApp.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:prism="http://prismlibrary.com/"
+        xmlns:viewmodels="clr-namespace:WpfApp.ViewModels"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowViewModel}"
+        Title="{Binding Title}"
+        Height="300"
+        Width="460">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal"
+                    Grid.ColumnSpan="3">
+            <Label Content="Time Zone:" 
+                   Margin="5"/>
+            <ComboBox x:Name="cbTimeZones"
+                      ItemsSource="{Binding TimeZones}"
+                      SelectedValue="{Binding SelectedTimeZone}"
+                      MinWidth="120"
+                      Margin="5"/>
+            <Button Content="Refresh"
+                    Command="{Binding GetAllTimeZonesCommand}"
+                    HorizontalAlignment="Right"
+                    Padding="5 0"
+                    Margin="5" />
+        </StackPanel>
+
+        <!--#region ReceivedTimeZoneData-->
+
+        <Label Content="{Binding Path=ReceivedTimeZoneData.DateTime}"
+               ContentStringFormat="{}Current Date: {0:dd MMMM yyyy}"
+               Grid.Row="1"
+               Grid.Column="0"
+               Margin="5"/>
+        <Label Content="{Binding Path=ReceivedTimeZoneData.DateTime}"
+               ContentStringFormat="{}Current Time: {0:HH:mm}"
+               Grid.Row="1"
+               Grid.Column="1"
+               Margin="5"/>
+
+        <Label Content="{Binding Path=ReceivedTimeZoneData.DayOfWeek}"
+               ContentStringFormat="{}DayOfWeek: {0}"
+               Grid.Row="2"
+               Grid.Column="0"
+               Margin="5"/>
+        <Label Content="{Binding Path=ReceivedTimeZoneData.DayOfYear}"
+               ContentStringFormat="{}DayOfYear: {0}"
+               Grid.Row="2"
+               Grid.Column="1"
+               Margin="5"/>
+        <Label Content="{Binding Path=ReceivedTimeZoneData.WeekNumber}"
+               ContentStringFormat="{}WeekNumber: {0}"
+               Grid.Row="2"
+               Grid.Column="2"
+               Margin="5"/>
+        <!--#endregion-->
+        
+        <!--#region Loading Overlay-->
+        <Grid Visibility="{Binding IsLoadingData, Converter={StaticResource BoolToVis}}"
+              Grid.RowSpan="4"
+              Grid.ColumnSpan="3"
+              Background="#A0C0C0C0">
+            <Label Content="Loading..."
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"/>
+            <Ellipse Stroke="Gray"
+                     StrokeDashArray="37"
+                     StrokeThickness="6"
+                     RenderTransformOrigin="0.5 0.5"
+                     Height="100"
+                     Width="100">
+                <Ellipse.RenderTransform>
+                    <RotateTransform x:Name="Rotation"
+                                     Angle="0"/>
+                </Ellipse.RenderTransform>
+                <Ellipse.Triggers>
+                    <EventTrigger RoutedEvent="Loaded">
+                        <BeginStoryboard>
+                            <Storyboard RepeatBehavior="Forever">
+                                <DoubleAnimation Storyboard.TargetName="Rotation"
+                                                 Storyboard.TargetProperty="Angle"
+                                                 From="0"
+                                                 To="360"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Ellipse.Triggers>
+            </Ellipse>
+        </Grid>
+        <!--#endregion-->
+    </Grid>
+</Window>
