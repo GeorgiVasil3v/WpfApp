@@ -5,7 +5,7 @@ namespace WpfApp.Base.Models
     internal class TimeZoneData
     {
         [JsonProperty("abbreviation")]
-        public DateTime? Abbreviation { get; set; }
+        public string? Abbreviation { get; set; }
 
         [JsonProperty("client_ip")]
         public string? ClientIp { get; set; }
